@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Anagram Checker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      text-align: center;
+      background: white;
+    }
+    
+    #check_button {
+      margin: 20px;
+    }
+    
+    .container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    form {
+      margin: 30px;
+    }
+  </style>
+  <script>
+    window.onkeypress = function(event) {
+      if (event.keyCode == 13) {
+        check();
+      }
+    }
+    
+    function check(){
+      var first = document.getElementById('word_one').value;
+      var second = document.getElementById('word_two').value;
+
+      if(check_if_anagram(first,second)) {
+        document.getElementById("output").innerHTML = "<i>" + first + "</i> and <i>" + second + "</i> are anagrams.";
+        document.body.style.backgroundColor = "#8DBB49";
+        
+      } else {
+        document.getElementById("output").innerHTML = "<i>" + first + "</i> and <i>" + second + "</i> are <strong>not</strong> anagrams.";
+        document.body.style.backgroundColor = "#D23437";
+      }
+    }
+    
+    // Code taken from http://codereview.stackexchange.com/questions/99247/determining-if-two-words-are-anagrams
+    function check_if_anagram(word1,word2){
+      if (typeof word1 !== 'string' || typeof word2 !== 'string') {
+        throw new Error('isAnagram requires two strings to be passed.')
+      }
+      
+      var normalizedWord1 = word1.replace(/[^A-Za-z]+/g, '').toLowerCase();
+      var normalizedWord2 = word2.replace(/[^A-Za-z]+/g, '').toLowerCase();
+
+      var counts = [];
+      var word1Length = normalizedWord1.length;
+      var word2Length = normalizedWord2.length;
+
+      if (word1Length !== word2Length) { return false; }
+
+      for (var i = 0; i < word1Length; i++) {
+        var index = normalizedWord1.charCodeAt(i)-97;
+        counts[index] = (counts[index] || 0) + 1;
+      }
+
+      for (var i = 0; i < word2Length; i++) {
+        var index = normalizedWord2.charCodeAt(i)-97;
+        if (!counts[index]) { return false; }
+        else { counts[index]--; }
+      }
+
+      return true;
+    }
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <h1>Anagram Checker</h1>
+  <p><b>an·a·gram</b> /ˈanəˌɡram/ <i>noun</i> a word, phrase, or name formed by rearranging the letters of another.</p>
+  
+  <form>
+    Please input two strings.<br>
+    White space and differences in capitalization will be ignored.<br>
+    <input type="text" id="word_one">
+    <input type="text" id="word_two"><br>
+    
+    <button type="button" onclick="check()" id="check_button">Check</button>
+  </form>
+  
+  <div id="output">
+  </div>
+</div>
+
+</body>
+</html>
